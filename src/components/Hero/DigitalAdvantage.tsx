@@ -45,7 +45,7 @@ const features = [
 
 const DigitalAdvantage: React.FC = () => {
   return (
-    <section className="relative w-full min-h-screen bg-[#03050A] text-white py-16 md:py-24 px-4 md:px-8 font-sans overflow-hidden flex flex-col items-center">
+    <section className="relative w-full  bg-[#03050A] text-white py-16 md:py-24 px-4 md:px-8 font-sans overflow-hidden flex flex-col items-center">
       
       {/* Background Ambient Glow */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[150px] pointer-events-none" />
