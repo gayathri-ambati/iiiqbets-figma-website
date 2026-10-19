@@ -1,21 +1,27 @@
-const posts = [
-  { slug: 'react-tips', title: '10 React Tips', excerpt: 'Boost your dev speed.' },
-  { slug: 'vite-guide', title: 'Getting Started with Vite', excerpt: 'Why Vite is blazing fast.' },
-  { slug: 'css-tricks', title: 'Modern CSS Tricks', excerpt: 'Less code, more power.' },
-]
+import InsightCards from '../components/InsightCards'
+import ArticleList from '../components/ArticleList'
 
-export default function Blog() {
+export default function Blogs() {
   return (
-    <section>
-      <h1>Blog</h1>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {posts.map((p) => (
-          <li key={p.slug} style={{ marginBottom: '1rem', borderBottom: '1px solid #333', paddingBottom: '1rem' }}>
-            <h3>{p.title}</h3>
-            <p>{p.excerpt}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <div className="blogs-page min-h-screen w-full bg-[#050b14] text-left font-['Inter',ui-sans-serif,system-ui,sans-serif] text-slate-200 antialiased">
+      <section className="blogs-hero mx-auto w-full max-w-[1680px] px-5 pb-14 pt-10 sm:px-8 sm:pt-14 lg:px-[8%]">
+        <p className="blogs-eyebrow text-[9px] font-semibold uppercase tracking-[0.2em] text-[#38b8f0] xl:text-[11px]">
+          Knowledge that creates impact
+        </p>
+        <h1 className="blogs-title mt-3 text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[56px] xl:text-[68px]">
+          Explore ideas.
+          <br />
+          Discover <span className="text-[#38b8f0]">new possibilities.</span>
+        </h1>
+        <p className="blogs-lead mt-5 max-w-xl text-xs leading-relaxed text-slate-400 xl:text-sm">
+          Explore practical knowledge on SEO, digital marketing, business transformation, and competitive strategy — all designed to help you understand the digital world and grow your business.
+        </p>
+      </section>
+
+      <InsightCards />
+      <div className="blogs-spacer h-16 sm:h-24" />
+      <ArticleList />
+      <div className="blogs-bottom-space h-16" />
+    </div>
   )
 }

@@ -21,7 +21,7 @@ function App() {
           <Route path="/service" element={<Service />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/products" element={<Products />} />
-          
+
           {/* Add these missing routes or remove them from the Navbar links */}
           <Route path="/career" element={<div>Career Page Coming Soon</div>} />
           <Route path="/canada" element={<div>iiQbets Canada Coming Soon</div>} />
