@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { CATEGORIES, PopIn, Reveal } from './serviceShared'
-import type { Filters, ServiceItem } from './serviceShared'
+import { CATEGORIES, PopIn, Reveal } from './ServiceShared'
+import type { Filters, ServiceItem } from './ServiceShared'
 
 /* ------------------------------------------------------------------ */
 /*  Section 3: Filters + search summary                                */

@@ -133,7 +133,7 @@
 // }
 // `
 
-import { Rise } from './serviceShared'
+import { Rise } from './ServiceShared'
 
 /* ------------------------------------------------------------------ */
 /*  HeroSection.tsx  (Tailwind only - no CSS)                          */

@@ -1,10 +1,9 @@
-
 import { useMemo, useState } from 'react'
 import HeroSection from '../components/ServiceCompo/HeroSection'
 import CategorySection from '../components/ServiceCompo/CategorySection'
 import FilterSection from '../components/ServiceCompo/FilterSection'
 import AvailableSection from '../components/ServiceCompo/AvailableSection'
-import type { ServiceItem, Filters } from '../components/ServiceCompo/serviceShared'
+import type { ServiceItem, Filters } from '../components/ServiceCompo/ServiceShared'
 
 /* ------------------------------------------------------------------ */
 /*  Data + filter logic  (shared types live in serviceShared.tsx)      */
@@ -71,7 +70,7 @@ export default function Service() {
 
   return (
     // -m-8 cancels the main padding set in App.tsx so sections run edge to edge
-    <main className="-m-8 min-h-screen w-full overflow-x-hidden bg-[#0d0b0e] font-[family-name:Inter,Manrope,system-ui,sans-serif] text-white">
+    <main className="-m-8 min-h-screen overflow-x-hidden bg-[#0d0b0e] font-[family-name:Inter,Manrope,system-ui,sans-serif] text-white">
       <HeroSection />
       <CategorySection active={applied.category} onSelect={pickCategory} />
       <FilterSection draft={draft} setDraft={setDraft} onSearch={search} onReset={reset} results={results} />
