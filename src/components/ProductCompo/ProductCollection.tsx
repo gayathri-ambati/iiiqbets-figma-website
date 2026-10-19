@@ -89,7 +89,7 @@ const products: Product[] = [
 
 const ProductCollection: React.FC = () => {
   return (
-    <section className="relative w-full min-h-screen bg-[#0B0B0F] text-white py-4 px-4 font-sans">
+    <section className="relative w-full  bg-[#0B0B0F] text-white py-4 px-4 font-sans">
       {/* ================= HEADER ================= */}
       <div className="flex flex-col gap-1.5 mb-8">
         <span className="text-[8px] md:text-[9px] font-bold tracking-[0.18em] text-[#22D3EE] uppercase">

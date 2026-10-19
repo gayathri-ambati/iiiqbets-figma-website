@@ -3,7 +3,7 @@ import ArticleList from '../components/ArticleList'
 
 export default function Blogs() {
   return (
-    <div className="blogs-page min-h-screen w-full bg-[#050b14] text-left font-['Inter',ui-sans-serif,system-ui,sans-serif] text-slate-200 antialiased">
+    <div className="blogs-page  w-full bg-[#050b14] text-left font-['Inter',ui-sans-serif,system-ui,sans-serif] text-slate-200 antialiased">
       <section className="blogs-hero mx-auto w-full max-w-[1680px] px-5 pb-14 pt-10 sm:px-8 sm:pt-14 lg:px-[8%]">
         <p className="blogs-eyebrow text-[9px] font-semibold uppercase tracking-[0.2em] text-[#38b8f0] xl:text-[11px]">
           Knowledge that creates impact

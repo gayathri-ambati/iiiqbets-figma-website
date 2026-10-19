@@ -19,7 +19,7 @@ const techStack: TechStackItem[] = [
 
 const MissionSection: React.FC = () => {
   return (
-    <section className="relative w-full min-h-screen bg-[#050B14] text-white overflow-hidden flex flex-col justify-between py-12 px-4 md:px-8">
+    <section className="relative w-full  bg-[#050B14] text-white overflow-hidden flex flex-col justify-between py-12 px-4 md:px-8">
       
       {/* Background Ambient Glows */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">

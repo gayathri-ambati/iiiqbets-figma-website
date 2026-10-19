@@ -172,7 +172,7 @@ function CentralLogo() {
 
 export default function WhyChooseUs() {
   return (
-    <main className="min-h-screen w-full overflow-hidden bg-[#030711] text-white">
+    <main className=" w-full overflow-hidden bg-[#030711] text-white">
       <section className="relative mx-auto w-full max-w-[1440px] px-4 pb-10 pt-8 sm:px-7 sm:pt-10 lg:px-12 lg:pb-8 lg:pt-8 xl:px-[6.3%]">
         {/* Background glow */}
         <div className="pointer-events-none absolute left-1/2 top-[35%] h-72 w-72 -translate-x-1/2 rounded-full bg-[#00d9c0]/[0.025] blur-[100px]" />

@@ -12,7 +12,7 @@ const tags = [
 
 const OurStory: React.FC = () => {
   return (
-    <section className="relative w-full min-h-screen bg-[#050A15] text-white py-16 md:py-24 px-4 md:px-8 font-sans overflow-hidden flex flex-col items-center">
+    <section className="relative w-full  bg-[#050A15] text-white py-16 md:py-24 px-4 md:px-8 font-sans overflow-hidden flex flex-col items-center">
       
       {/* Background Ambient Glow (Subtle) */}
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-teal-900/5 rounded-full blur-[120px] pointer-events-none" />

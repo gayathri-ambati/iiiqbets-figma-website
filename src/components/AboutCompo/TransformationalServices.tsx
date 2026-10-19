@@ -11,7 +11,7 @@ const bottomCards = [
 
 const TransformationalServices: React.FC = () => {
   return (
-    <section className="relative w-full min-h-screen bg-[#050505] text-white flex flex-col items-center justify-center py-12 px-4 md:px-8 font-sans overflow-hidden">
+    <section className="relative w-full  bg-[#050505] text-white flex flex-col items-center justify-center py-12 px-4 md:px-8 font-sans overflow-hidden">
       
       {/* Background Ambient Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[400px] bg-blue-900/10 rounded-full blur-[100px] pointer-events-none" />

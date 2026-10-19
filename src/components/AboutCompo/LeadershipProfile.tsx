@@ -4,7 +4,7 @@ import { ArrowUpRight, GraduationCap, Briefcase, UserCircle2 } from 'lucide-reac
 
 const LeadershipProfile: React.FC = () => {
   return (
-    <section className="relative w-full min-h-screen bg-[#050A15] text-white py-12 md:py-20 px-4 md:px-8 font-sans flex flex-col items-center">
+    <section className="relative w-full  bg-[#050A15] text-white py-12 md:py-20 px-4 md:px-8 font-sans flex flex-col items-center">
       
       {/* Background Ambience */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-900/10 rounded-full blur-[120px] pointer-events-none" />

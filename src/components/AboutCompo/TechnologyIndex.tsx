@@ -13,8 +13,8 @@ const expertise = [
 
 export default function TechnologyIndex() {
   return (
-    <main className="min-h-screen w-full overflow-hidden bg-[#030711] text-white">
-      <section className="relative mx-auto flex min-h-screen w-full max-w-[1440px] items-center px-5 py-12 sm:px-8 md:px-12 lg:px-[8.5%] lg:py-16">
+    <main className=" w-full overflow-hidden bg-[#030711] text-white">
+      <section className="relative mx-auto flex  w-full max-w-[1440px] items-center px-5 py-12 sm:px-8 md:px-12 lg:px-[8.5%] lg:py-16">
         {/* Background glow */}
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/[0.035] blur-[120px]" />
 

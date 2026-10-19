@@ -173,7 +173,7 @@ const strip = [
 const DigitalTransformation: React.FC = () => {
   return (
     <section
-      className="relative w-full min-h-screen text-white font-sans overflow-hidden flex items-center justify-center px-4 py-10 md:px-10 md:py-16"
+      className="relative w-full  text-white font-sans overflow-hidden flex items-center justify-center px-4 py-10 md:px-10 md:py-16"
       style={STARS}
     >
       <div className="relative z-10 w-full max-w-[1100px] flex flex-col gap-4 md:gap-5">

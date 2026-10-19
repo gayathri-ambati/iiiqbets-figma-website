@@ -56,7 +56,7 @@ const ProductDirectorysection: React.FC = () => {
   const [verifiedOnly, setVerifiedOnly] = useState(false);
 
   return (
-    <section className="relative w-full min-h-screen bg-[#0A0D12] text-white py-12 px-4 md:px-8 font-sans flex flex-col items-center">
+    <section className="relative w-full  bg-[#0A0D12] text-white py-12 px-4 md:px-8 font-sans flex flex-col items-center">
       <div className="w-full max-w-[1280px] flex flex-col gap-12">
         {/* ================= TOP HEADER ================= */}
         <div className="flex flex-col items-center text-center">

@@ -16,7 +16,7 @@ const technologyImages = [
 
 export default function Herosection() {
   return (
-    <main className="min-h-screen bg-[#100d0e] p-0 sm:p-4">
+    <main className=" bg-[#100d0e] p-0 sm:p-4">
       <section className="relative isolate flex min-h-[650px] w-full flex-col justify-between overflow-hidden rounded-b-[24px] bg-[#061116] sm:min-h-[470px] sm:rounded-[24px] md:min-h-[500px] lg:min-h-[520px] lg:flex-row">
         {/* Background image */}
         <img

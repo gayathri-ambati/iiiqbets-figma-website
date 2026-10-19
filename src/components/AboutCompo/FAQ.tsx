@@ -70,7 +70,7 @@ const FaqItem = ({ number, question }: { number: number; question: string }) => 
 
 const FAQ: React.FC = () => {
   return (
-    <section className="relative w-full min-h-screen bg-[#03050A] text-white pt-10 md:pt-12 pb-16 px-4 md:px-8 font-sans overflow-hidden flex flex-col items-center">
+    <section className="relative w-full  bg-[#03050A] text-white pt-10 md:pt-12 pb-16 px-4 md:px-8 font-sans overflow-hidden flex flex-col items-center">
       {/* Background Ambient Glow */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[150px] pointer-events-none" />
 
