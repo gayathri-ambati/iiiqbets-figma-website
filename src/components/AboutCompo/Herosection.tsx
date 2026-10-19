@@ -33,10 +33,10 @@ export default function Herosection() {
         {/* Left content */}
         <div className="relative z-10 flex w-full flex-col items-start justify-center px-6 pb-8 pt-16 sm:px-8 sm:py-12 md:w-[65%] md:px-10 lg:w-[62%] lg:px-12 lg:py-14">
          <h1 className="max-w-[460px] text-[36px] font-extrabold leading-[1.02] tracking-[-1.5px] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.5)] sm:text-[42px] md:text-[46px] lg:text-[50px]">
-  Your Partner
-  <br />
-  in Progress
-</h1>
+            Your Partner
+            <br />
+            in Progress
+        </h1>
 
           <p className="mt-4 max-w-[360px] text-[12px] font-normal leading-[1.7] text-gray-300 sm:max-w-[390px] sm:text-[13px] md:text-[12px] lg:max-w-[390px]">
             iiiQbets is the partner of choice for many of the world's

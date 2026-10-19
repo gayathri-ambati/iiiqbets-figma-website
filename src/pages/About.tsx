@@ -1,8 +1,13 @@
 
+import FAQ from "../components/AboutCompo/FAQ";
 import Herosection from "../components/AboutCompo/Herosection";
+import LeadershipProfile from "../components/AboutCompo/LeadershipProfile";
+import MindsBehind from "../components/AboutCompo/MindsBehind";
 import MissionSection from "../components/AboutCompo/MissionSection";
-import TechTrends from "../components/AboutCompo/TechTrends";
+import OurStory from "../components/AboutCompo/OurStory";
+import TechnologyIndex from "../components/AboutCompo/TechnologyIndex";
 import TransformationalServices from "../components/AboutCompo/TransformationalServices";
+import WhyChooseUs from "../components/AboutCompo/WhyChooseUs";
 
 export default function About() {
   return (
@@ -11,7 +16,12 @@ export default function About() {
       <Herosection />
       <MissionSection />
       <TransformationalServices />
-      <TechTrends />
+      <TechnologyIndex />
+      <WhyChooseUs />
+      <OurStory />
+      <MindsBehind />
+      <LeadershipProfile />
+      <FAQ />
 
     </main>
   );

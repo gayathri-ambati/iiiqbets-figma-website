@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   FaFacebookF, 
@@ -9,6 +10,10 @@ import {
 import { FiMail, FiPhone } from 'react-icons/fi';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 
+// IMPORT YOUR LOGO HERE
+// Adjust the filename extension (.png, .svg) to match your actual file
+import LogoImage from '../assets/logo.webp';
+
 const Footer: React.FC = () => {
   return (
     <footer className="bg-[#050a1f] text-white font-sans pt-16 pb-8 w-full border-t border-gray-800">
@@ -17,15 +22,13 @@ const Footer: React.FC = () => {
         {/* Top Section: Logo & Contact Info */}
         <div className="flex flex-col items-center mb-16">
           
-          {/* Logo */}
+          {/* Logo (Imported from assets) */}
           <div className="flex flex-col items-center mb-6">
-            <div className="flex items-end justify-center leading-none">
-              <span className="text-[40px] font-black tracking-[-6px] text-[#15266d]">iii</span>
-              <span className="text-[52px] font-black leading-[0.7] tracking-[-4px] text-[#ff171f]">Q</span>
-            </div>
-            <span className="mt-2 text-[8px] font-bold tracking-[0.2em] text-[#31447e]">
-              DIGITAL TRANSFORMATION SPECIALISTS
-            </span>
+            <img 
+              src={LogoImage} 
+              alt="iiQbets Logo" 
+              className="h-16 md:h-20 w-auto object-contain drop-shadow-md" 
+            />
           </div>
 
           {/* Subtext */}
