@@ -1,25 +1,18 @@
-// export default function About() {
-//   return (
-//     <section>
-        
-//       <h1>About Us</h1>
-//       <p>We are a team of passionate developers building great products.</p>
-//     </section>
-//   )
-// }
-
-
 
 import Herosection from "../components/AboutCompo/Herosection";
-
+import MissionSection from "../components/AboutCompo/MissionSection";
+import TechTrends from "../components/AboutCompo/TechTrends";
+import TransformationalServices from "../components/AboutCompo/TransformationalServices";
 
 export default function About() {
   return (
     <main className="min-h-screen w-full overflow-hidden bg-white">
      
       <Herosection />
+      <MissionSection />
+      <TransformationalServices />
+      <TechTrends />
 
-     
     </main>
   );
 }
