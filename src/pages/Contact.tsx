@@ -12,6 +12,15 @@ import {
 } from "react-icons/fa";
 
 /* ------------------------------------------------------------------ */
+/* API config                                                          */
+/* Set VITE_API_BASE_URL in your .env, e.g.                           */
+/*   VITE_API_BASE_URL=http://localhost:5000                           */
+/* ------------------------------------------------------------------ */
+const API_BASE =
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
+  "http://localhost:5000";
+
+/* ------------------------------------------------------------------ */
 /* Types                                                               */
 /* ------------------------------------------------------------------ */
 interface ContactFormState {
@@ -37,6 +46,11 @@ interface SocialItem {
   label: string;
   href: string;
   icon: IconType;
+}
+
+interface SubmitStatus {
+  type: "success" | "error" | null;
+  message: string;
 }
 
 /* ------------------------------------------------------------------ */
@@ -209,18 +223,85 @@ const inputStyle = `${fieldBase} h-11 text-slate-200`;
 /* ------------------------------------------------------------------ */
 const ContactSection = () => {
   const [form, setForm] = useState<ContactFormState>(INITIAL_FORM);
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState<SubmitStatus>({
+    type: null,
+    message: "",
+  });
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ): void => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    // clear stale message as soon as user edits
+    if (status.type) setStatus({ type: null, message: "" });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (
+    e: FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
-    console.log("Contact form submitted:", form); // TODO: replace with API call
-    setForm(INITIAL_FORM);
+    if (submitting) return;
+
+    // ---- client-side validation ----
+    if (!form.firstName.trim()) {
+      setStatus({ type: "error", message: "First name is required." });
+      return;
+    }
+    if (!form.email.trim()) {
+      setStatus({ type: "error", message: "Email address is required." });
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email.trim())) {
+      setStatus({ type: "error", message: "Please enter a valid email address." });
+      return;
+    }
+    if (!form.message.trim()) {
+      setStatus({ type: "error", message: "Message is required." });
+      return;
+    }
+
+    setSubmitting(true);
+    setStatus({ type: null, message: "" });
+
+    try {
+      const res = await fetch(`${API_BASE}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: form.firstName.trim(),
+          lastName: form.lastName.trim(),
+          email: form.email.trim(),
+          mobile: form.mobile.trim(),
+          enquiry: form.enquiry,
+          message: form.message.trim(),
+        }),
+      });
+
+      // Gracefully handle non-JSON responses (e.g. proxy errors)
+      const contentType = res.headers.get("content-type") || "";
+      const data = contentType.includes("application/json")
+        ? await res.json()
+        : { success: res.ok, message: res.statusText };
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to send message.");
+      }
+
+      setStatus({
+        type: "success",
+        message: data.message || "Message sent successfully!",
+      });
+      setForm(INITIAL_FORM);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong.";
+      setStatus({ type: "error", message });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -339,6 +420,7 @@ const ContactSection = () => {
                     onChange={handleChange}
                     placeholder="Enter first name"
                     className={inputStyle}
+                    disabled={submitting}
                   />
                 </div>
                 <div className="iliq-contact-group">
@@ -353,6 +435,7 @@ const ContactSection = () => {
                     onChange={handleChange}
                     placeholder="Enter last name"
                     className={inputStyle}
+                    disabled={submitting}
                   />
                 </div>
               </div>
@@ -371,6 +454,7 @@ const ContactSection = () => {
                   onChange={handleChange}
                   placeholder="you@example.com"
                   className={inputStyle}
+                  disabled={submitting}
                 />
               </div>
 
@@ -387,6 +471,7 @@ const ContactSection = () => {
                   onChange={handleChange}
                   placeholder="+91 Enter mobile number"
                   className={inputStyle}
+                  disabled={submitting}
                 />
               </div>
 
@@ -404,6 +489,7 @@ const ContactSection = () => {
                     className={`${fieldBase} h-11 appearance-none pr-10 ${
                       form.enquiry ? "text-slate-200" : "text-[#4d566b]"
                     }`}
+                    disabled={submitting}
                   >
                     <option value="" disabled>
                       Select an enquiry type
@@ -433,16 +519,32 @@ const ContactSection = () => {
                   value={form.message}
                   onChange={handleChange}
                   className={`${fieldBase} h-[116px] resize-none py-3 text-slate-200`}
+                  disabled={submitting}
                 />
               </div>
+
+              {/* status message */}
+              {status.type && (
+                <p
+                  role="alert"
+                  className={`iliq-contact-status text-xs font-medium ${
+                    status.type === "success"
+                      ? "text-emerald-400"
+                      : "text-rose-400"
+                  }`}
+                >
+                  {status.message}
+                </p>
+              )}
 
               {/* submit */}
               <div className="iliq-contact-actions">
                 <button
                   type="submit"
-                  className="iliq-contact-submit h-11 w-full cursor-pointer text-xs font-semibold shadow-[0_10px_30px_-8px_rgba(240,45,115,0.55)] transition hover:brightness-110 focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f1526] active:scale-[0.99]"
+                  disabled={submitting}
+                  className="iliq-contact-submit h-11 w-full cursor-pointer text-xs font-semibold shadow-[0_10px_30px_-8px_rgba(240,45,115,0.55)] transition hover:brightness-110 focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f1526] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Send Message
+                  {submitting ? "Sending..." : "Send Message"}
                 </button>
                 <p className="iliq-contact-note mt-4 text-[10px] text-[#6b7491]">
                   Your information will be handled with care.

@@ -7,6 +7,9 @@ import Contact from './pages/Contact'
 import Service from './pages/Service'
 import Blog from './pages/Blog'
 import Products from './pages/Products'
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminContacts from './pages/admin/AdminContact'
+import AdminProtectedRoute from './components/AdminProtectedRoute'
 import './App.css'
 
 function App() {
@@ -21,6 +24,17 @@ function App() {
           <Route path="/service" element={<Service />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/products" element={<Products />} />
+
+          {/* Admin routes */}
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route
+            path="/admin/contacts"
+            element={
+              <AdminProtectedRoute>
+                <AdminContacts />
+              </AdminProtectedRoute>
+            }
+          />
 
           {/* Add these missing routes or remove them from the Navbar links */}
           <Route path="/career" element={<div>Career Page Coming Soon</div>} />
