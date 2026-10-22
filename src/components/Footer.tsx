@@ -12,7 +12,7 @@ import { HiOutlineLocationMarker } from 'react-icons/hi';
 
 // IMPORT YOUR LOGO HERE
 // Adjust the filename extension (.png, .svg) to match your actual file
-import LogoImage from '../assets/logo.webp';
+import LogoImage from '../assets/iiiqbetslogo.png';
 
 const Footer: React.FC = () => {
   return (

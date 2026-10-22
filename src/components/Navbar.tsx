@@ -13,7 +13,7 @@ import {
 } from "react-icons/fi";
 
 
-import LogoImage from "../assets/logo.webp"; 
+import LogoImage from "../assets/iiiqbetslogo.png"; 
 
 // Navigation Links
 const navLinks = [
