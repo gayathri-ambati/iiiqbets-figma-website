@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { JSX } from 'react'
+import { motion } from 'framer-motion'
 
 interface IiqWcuCard {
   id: string
@@ -144,14 +145,17 @@ function IiqWcuCountUp({ end, suffix, active, duration, className = '' }: IiqWcu
   }, [active, end, duration])
 
   return (
-    <span
+    <motion.span
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className={`iiq-wcu-count inline-block bg-gradient-to-r bg-clip-text tabular-nums text-transparent ${className} ${
         done ? 'animate-[iiqWcuPop_0.6s_ease-out] motion-reduce:animate-none' : ''
       }`}
     >
       {n}
       {suffix}
-    </span>
+    </motion.span>
   )
 }
 
@@ -181,14 +185,20 @@ export default function WhyChooseUs(): JSX.Element {
       <div className="iiq-wcu-container mx-auto w-full max-w-7xl">
         {/* Eyebrow */}
         <div className="iiq-wcu-eyebrow flex items-center justify-center gap-3">
-          <span
-            className={`iiq-wcu-eyebrow-line h-px bg-sky-400 shadow-[0_0_8px_#38bdf8] transition-all duration-700 ease-out ${
-              cardsInView ? 'w-10 opacity-100' : 'w-0 opacity-0'
-            }`}
+          <motion.span
+            initial={{ width: 0, opacity: 0 }}
+            animate={cardsInView ? { width: 40, opacity: 1 } : { width: 0, opacity: 0 }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
+            className="iiq-wcu-eyebrow-line h-px bg-sky-400 shadow-[0_0_8px_#38bdf8]"
           />
-          <span className="iiq-wcu-eyebrow-text text-[10px] font-semibold uppercase tracking-[0.3em] text-sky-400">
+          <motion.span
+            initial={{ opacity: 0, y: -8 }}
+            animate={cardsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+            className="iiq-wcu-eyebrow-text text-[10px] font-semibold uppercase tracking-[0.3em] text-sky-400"
+          >
             Why Choose Us
-          </span>
+          </motion.span>
         </div>
 
         {/* Skewed cards: 4 equal columns spread across the full container */}
@@ -199,12 +209,18 @@ export default function WhyChooseUs(): JSX.Element {
           {iiqWcuCards.map((card: IiqWcuCard, index: number) => {
             const isLower: boolean = index % 2 === 1
             return (
-              <article
+              <motion.article
                 key={card.id}
-                style={{ transitionDelay: `${index * 140}ms` }}
-                className={`iiq-wcu-col iiq-wcu-col-${card.id} flex w-[240px] flex-col gap-4 transition-all duration-700 ease-out motion-reduce:transition-none ${
+                initial={{ opacity: 0, y: 40 }}
+                animate={cardsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                transition={{
+                  duration: 0.7,
+                  delay: index * 0.14,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className={`iiq-wcu-col iiq-wcu-col-${card.id} flex w-[240px] flex-col gap-4 ${
                   isLower ? 'lg:mt-[120px] lg:flex-col-reverse' : ''
-                } ${cardsInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                }`}
               >
                 {/* Float wrapper (keeps float transform separate from hover transform) */}
                 <div
@@ -212,9 +228,11 @@ export default function WhyChooseUs(): JSX.Element {
                   style={{ animationDelay: `${index * 0.8}s` }}
                 >
                   {/* Skewed image card */}
-                  <a
+                  <motion.a
                     href={card.href}
-                    className="iiq-wcu-card group relative block h-[340px] w-[240px] -skew-x-[12deg] overflow-hidden rounded-xl border border-white/80 bg-gradient-to-br from-slate-700 to-slate-900 shadow-lg shadow-black/50 transition duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-sky-400/30"
+                    whileHover={{ y: -8 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className="iiq-wcu-card group relative block h-[340px] w-[240px] -skew-x-[12deg] overflow-hidden rounded-xl border border-white/80 bg-gradient-to-br from-slate-700 to-slate-900 shadow-lg shadow-black/50 hover:shadow-2xl hover:shadow-sky-400/30"
                   >
                     <img
                       src={card.image}
@@ -238,11 +256,18 @@ export default function WhyChooseUs(): JSX.Element {
                         </span>
                       </span>
                     </div>
-                  </a>
+                  </motion.a>
                 </div>
 
                 {/* Text block: same width as the card, aligned to the skewed edge */}
-                <div
+                <motion.div
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={cardsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.14 + 0.25,
+                    ease: 'easeOut',
+                  }}
                   className={`iiq-wcu-text w-[240px] -translate-x-[36px] text-left ${
                     isLower ? 'lg:translate-x-[36px]' : ''
                   }`}
@@ -257,8 +282,8 @@ export default function WhyChooseUs(): JSX.Element {
                   <p className="iiq-wcu-text-body mt-2 break-words text-[11px] leading-relaxed text-slate-300">
                     {card.text}
                   </p>
-                </div>
-              </article>
+                </motion.div>
+              </motion.article>
             )
           })}
         </div>
@@ -269,18 +294,35 @@ export default function WhyChooseUs(): JSX.Element {
           className="iiq-wcu-stats mt-16 grid w-full grid-cols-1 gap-6 md:grid-cols-2"
         >
           {iiqWcuStats.map((stat: IiqWcuStat, index: number) => (
-            <div
+            <motion.div
               key={stat.title}
-              style={{ transitionDelay: `${index * 150}ms` }}
-              className={`iiq-wcu-stat group relative overflow-hidden rounded-2xl border bg-gradient-to-br p-8 text-left backdrop-blur transition-all duration-700 ease-out hover:-translate-y-1 hover:shadow-xl motion-reduce:transition-none ${
-                stat.cardClass
-              } ${statsInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+              initial={{ opacity: 0, y: 40, scale: 0.96 }}
+              animate={
+                statsInView
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0, y: 40, scale: 0.96 }
+              }
+              whileHover={{ y: -6 }}
+              transition={{
+                duration: 0.7,
+                delay: index * 0.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className={`iiq-wcu-stat group relative overflow-hidden rounded-2xl border bg-gradient-to-br p-8 text-left backdrop-blur hover:shadow-xl ${stat.cardClass}`}
             >
               {/* decorative circle: pulses while the number counts */}
-              <span
-                className={`iiq-wcu-stat-circle pointer-events-none absolute -bottom-20 -right-12 h-48 w-48 rounded-full border border-white/10 transition duration-700 group-hover:scale-125 group-hover:border-white/20 ${
-                  statsInView ? 'animate-[iiqWcuRing_2s_ease-in-out_1] motion-reduce:animate-none' : ''
-                }`}
+              <motion.span
+                animate={
+                  statsInView
+                    ? { scale: [1, 1.08, 1], opacity: [0.4, 1, 0.4] }
+                    : { scale: 1, opacity: 0.4 }
+                }
+                transition={
+                  statsInView
+                    ? { duration: 2, repeat: Infinity, ease: 'easeInOut', delay: index * 0.3 }
+                    : { duration: 0 }
+                }
+                className="iiq-wcu-stat-circle pointer-events-none absolute -bottom-20 -right-12 h-48 w-48 rounded-full border border-white/10 transition-colors duration-700 group-hover:border-white/20"
               />
 
               {/* animated number */}
@@ -310,7 +352,7 @@ export default function WhyChooseUs(): JSX.Element {
               <p className="iiq-wcu-stat-text mt-2 max-w-md text-xs leading-relaxed text-slate-400">
                 {stat.text}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

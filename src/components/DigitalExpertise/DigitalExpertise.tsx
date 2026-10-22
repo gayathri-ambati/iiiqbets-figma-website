@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { JSX, SyntheticEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 interface IiqDexItem {
   id: string
@@ -91,8 +92,9 @@ const IIQ_DEX_SLOTS: IiqDexSlot[] = [
    (zero-based slot indexes) */
 const IIQ_DEX_RING: number[] = [0, 1, 4, 6, 5, 2]
 
-const IIQ_DEX_STEP_MS = 3500 // time between moves
-const IIQ_DEX_MOVE_MS = 1100 // how long one move takes
+/* ⚡ FASTER ROTATION — was 3500 / 1100 (21s loop). Now 1400 / 700 (~8.4s loop) */
+const IIQ_DEX_STEP_MS = 1400 // time between moves
+const IIQ_DEX_MOVE_MS = 700 // how long one move takes
 
 const iiqDexHexClip =
   '[clip-path:polygon(50%_0%,100%_25%,100%_75%,50%_100%,0%_75%,0%_25%)]'
@@ -134,7 +136,9 @@ function useIiqDexInView<T extends HTMLElement>() {
 
 function IiqDexHex({ item }: { item: IiqDexItem }): JSX.Element {
   return (
-    <article
+    <motion.article
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className={`iiq-dex-hex iiq-dex-hex-${item.id} group relative h-[210px] w-[190px] bg-slate-200/80 transition-colors duration-300 hover:bg-sky-300 ${iiqDexHexClip}`}
     >
       <div
@@ -160,7 +164,7 @@ function IiqDexHex({ item }: { item: IiqDexItem }): JSX.Element {
           </p>
         </div>
       </div>
-    </article>
+    </motion.article>
   )
 }
 
@@ -180,13 +184,14 @@ export default function DigitalExpertise(): JSX.Element {
   return (
     <section className="iiq-dex-section relative w-full overflow-hidden bg-[#030712] px-4 py-16 text-white sm:px-6 lg:px-10">
       <div className="iiq-dex-container mx-auto max-w-6xl">
-        <h2
-          className={`iiq-dex-heading text-center text-3xl font-extrabold tracking-tight text-white transition-all duration-700 ease-out motion-reduce:transition-none sm:text-4xl ${
-            inView ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
-          }`}
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="iiq-dex-heading text-center text-3xl font-extrabold tracking-tight text-white sm:text-4xl"
         >
           Our Digital Expertise
-        </h2>
+        </motion.h2>
 
         {/* Honeycomb */}
         <div ref={honeycombRef} className="iiq-dex-honeycomb mt-14">
@@ -236,10 +241,11 @@ export default function DigitalExpertise(): JSX.Element {
         </div>
 
         {/* CTA banner */}
-        <div
-          className={`iiq-dex-cta mt-14 flex flex-col items-start justify-between gap-5 rounded-xl border border-indigo-400/20 bg-gradient-to-r from-[#0b1230] to-[#1a1040] px-6 py-6 transition-all delay-500 duration-700 ease-out motion-reduce:transition-none sm:flex-row sm:items-center ${
-            inView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+          transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="iiq-dex-cta mt-14 flex flex-col items-start justify-between gap-5 rounded-xl border border-indigo-400/20 bg-gradient-to-r from-[#0b1230] to-[#1a1040] px-6 py-6 sm:flex-row sm:items-center"
         >
           <div className="iiq-dex-cta-copy">
             <h3 className="iiq-dex-cta-title text-lg font-bold text-white sm:text-xl">
@@ -255,7 +261,7 @@ export default function DigitalExpertise(): JSX.Element {
           >
             Contact us →
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
