@@ -15,7 +15,7 @@ export default function About() {
     <main className="min-h-screen w-full overflow-hidden bg-white">
      
       <Herosection />
-      <MissionSection />
+      {/* <MissionSection /> */}
       <TransformationalServices />
       <TechnologyIndex />
       <WhyChooseUs />
