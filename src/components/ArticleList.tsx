@@ -1,3 +1,5 @@
+import AuthorImage from '../assets/abhijith-MK.webp'
+
 interface Article {
   slug: string
   category: string
@@ -39,14 +41,17 @@ export default function ArticleList() {
                   <h3 className="article-item__title mt-0.5 text-[13px] font-bold text-white xl:text-base">{a.title}</h3>
                   <p className="article-item__excerpt mt-1 line-clamp-2 text-[10px] leading-relaxed text-slate-400 xl:text-xs">{a.excerpt}</p>
                 </div>
-                <span aria-hidden="true" className="article-item__dot hidden h-8 w-8 shrink-0 rounded-full border border-[#1c2b3b] bg-[#111f2e] group-hover:border-[#38b8f0] sm:block xl:h-10 xl:w-10" />
               </a>
             </li>
           ))}
         </ul>
 
         <aside className="author-card h-fit rounded-lg border border-[#1c2b3b] bg-[#0d1825] p-4 text-left lg:sticky lg:top-6 xl:p-5">
-          <div className="author-avatar h-10 w-10 rounded-full bg-[#1f3a4a] xl:h-12 xl:w-12" aria-hidden="true" />
+          <img
+            src={AuthorImage}
+            alt={author.name}
+            className="author-avatar h-14 w-14 rounded-full border border-[#1f3a4a] object-cover xl:h-16 xl:w-16"
+          />
           <h3 className="author-name mt-3 text-[13px] font-bold text-white xl:text-base">{author.name}</h3>
           <p className="author-role mt-0.5 text-[10px] text-slate-400 xl:text-xs">{author.role}</p>
           <p className="author-bio mt-3 text-[10px] leading-relaxed text-slate-400 xl:text-xs">{author.bio}</p>
