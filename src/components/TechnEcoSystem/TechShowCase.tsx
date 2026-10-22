@@ -11,8 +11,19 @@ const FEATURES = [
   { title: 'Business Growth', text: 'Technology built to scale', icon: <Ico><path d="M4 4v16h16" /><path d="m8 15 4-4 3 3 4-5" /></Ico> },
 ]
 
-export default function TechShowcase({ videoSrc }: { videoSrc?: string }) {
+// Placeholder demo video (Blender Foundation's "Big Buck Bunny"). Replace with your own ID.
+const DEFAULT_YOUTUBE_ID = 'aqz-KE-bpKQ'
+
+interface Props {
+  /** Direct video file (mp4/webm). Takes priority over YouTube if provided. */
+  videoSrc?: string
+  /** YouTube video ID, e.g. "aqz-KE-bpKQ" */
+  youtubeId?: string
+}
+
+export default function TechShowcase({ videoSrc, youtubeId = DEFAULT_YOUTUBE_ID }: Props) {
   const [playing, setPlaying] = useState(false)
+  const [thumb, setThumb] = useState(`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`)
 
   return (
     <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
@@ -20,19 +31,41 @@ export default function TechShowcase({ videoSrc }: { videoSrc?: string }) {
       <div className="relative">
         <div className="rounded-[1.75rem] bg-gradient-to-br from-[#1b4fa0]/70 via-[#2a1647]/70 to-[#7a1f55]/70 p-2 shadow-[0_0_60px_-10px_rgba(168,85,247,0.35)]">
           <div className="relative flex aspect-[1.6/1] items-center justify-center overflow-hidden rounded-2xl bg-[#04081a]">
-            {playing && videoSrc ? (
-              <video src={videoSrc} className="h-full w-full object-cover" controls autoPlay />
+            {playing ? (
+              videoSrc ? (
+                <video src={videoSrc} className="h-full w-full object-cover" controls autoPlay />
+              ) : (
+                <iframe
+                  className="absolute inset-0 h-full w-full border-0"
+                  src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`}
+                  title="Technology showcase video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              )
             ) : (
               <>
+                {/* Placeholder thumbnail */}
+                {!videoSrc && (
+                  <img
+                    src={thumb}
+                    alt=""
+                    loading="lazy"
+                    onError={() => setThumb(`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`)}
+                    className="absolute inset-0 h-full w-full object-cover opacity-60"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#04081a] via-[#04081a]/30 to-[#04081a]/50" />
+
                 <button
                   type="button"
                   aria-label="Play video"
-                  onClick={() => videoSrc && setPlaying(true)}
-                  className="flex h-14 w-14 items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#ff2e7e] to-[#e11d48] p-0 text-white shadow-[0_0_40px_rgba(244,63,94,0.7)] transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  onClick={() => setPlaying(true)}
+                  className="relative flex h-14 w-14 items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#ff2e7e] to-[#e11d48] p-0 text-white shadow-[0_0_40px_rgba(244,63,94,0.7)] transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                 >
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
                 </button>
-                <p className="m-0 absolute bottom-[18%] w-full text-center text-[8px] tracking-[0.3em] text-slate-500 sm:text-[9px]">
+                <p className="m-0 absolute bottom-[10%] w-full text-center text-[8px] tracking-[0.3em] text-slate-300 sm:text-[9px]">
                   DIGITAL TRANSFORMATION SPECIALISTS
                 </p>
               </>
@@ -54,7 +87,7 @@ export default function TechShowcase({ videoSrc }: { videoSrc?: string }) {
 
         <ul className="m-0 mt-7 grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-2">
           {FEATURES.map((f) => (
-            <li key={f.title} className={`flex items-center gap-3 rounded-lg px-3 py-3 border border-[#1b2d63]/70 bg-gradient-to-b from-[#0b1736]/80 to-[#060d24]/80 backdrop-blur-sm`}>
+            <li key={f.title} className="flex items-center gap-3 rounded-lg border border-[#1b2d63]/70 bg-gradient-to-b from-[#0b1736]/80 to-[#060d24]/80 px-3 py-3 backdrop-blur-sm">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-sky-500/15 text-sky-400">{f.icon}</span>
               <span className="min-w-0 text-[11px] leading-tight">
                 <strong className="block font-bold text-white">{f.title}</strong>

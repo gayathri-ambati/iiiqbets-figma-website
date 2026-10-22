@@ -13,17 +13,12 @@ import { HeroProductStrip } from './HeroShared'
 
 const SLIDES = [
   { id: 'empower', label: 'Empowering businesses', node: <HeroSlideOne /> },
-  { id: 'services', label: 'Our services', node: <HeroSlideTwo /> },
   {
-    id: 'promote-a',
+    id: 'promote',
     label: 'Promote your business',
     node: <HeroSlidePromote variant="a" />,
   },
-  {
-    id: 'promote-b',
-    label: 'Digital marketing strategies',
-    node: <HeroSlidePromote variant="b" />,
-  },
+  { id: 'services', label: 'Our services', node: <HeroSlideTwo /> },
 ]
 
 const AUTOPLAY_MS = 4000
@@ -41,16 +36,23 @@ export default function HeroCarousel() {
     [count],
   )
 
+  // Auto-advance every AUTOPLAY_MS. Restarts after every slide change
+  // (auto or manual). Hover/focus no longer pause it – a resting mouse
+  // pointer over the hero was freezing the carousel.
   useEffect(() => {
     if (paused) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    const timer = window.setInterval(() => {
+    const timer = window.setTimeout(() => {
       setIndex((current) => (current + 1) % count)
     }, AUTOPLAY_MS)
+    return () => window.clearTimeout(timer)
+  }, [paused, index, count])
 
-    return () => window.clearInterval(timer)
-  }, [paused, count])
+  // Pause only while the browser tab is in the background
+  useEffect(() => {
+    const onVisibility = () => setPaused(document.hidden)
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => document.removeEventListener('visibilitychange', onVisibility)
+  }, [])
 
   const onTouchStart = (event: TouchEvent<HTMLDivElement>) => {
     touchX.current = event.touches[0].clientX
@@ -58,13 +60,8 @@ export default function HeroCarousel() {
 
   const onTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
     if (touchX.current === null) return
-
     const difference = event.changedTouches[0].clientX - touchX.current
-
-    if (Math.abs(difference) > 50) {
-      go(index + (difference < 0 ? 1 : -1))
-    }
-
+    if (Math.abs(difference) > 50) go(index + (difference < 0 ? 1 : -1))
     touchX.current = null
   }
 
@@ -73,29 +70,20 @@ export default function HeroCarousel() {
       aria-label="Featured highlights"
       aria-roledescription="carousel"
       tabIndex={0}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          setPaused(false)
-        }
-      }}
       onKeyDown={(event) => {
         if (event.key === 'ArrowRight') go(index + 1)
         if (event.key === 'ArrowLeft') go(index - 1)
       }}
-      // Increased outer padding to give the content more breathing room
-      className="relative mx-auto w-full max-w-none overflow-hidden rounded-lg border border-slate-800/70 bg-[#030712] px-6 py-8 text-left font-sans text-white sm:px-10 sm:py-10 lg:px-16 lg:py-12"
+      className="relative mx-auto w-full max-w-[1502px] overflow-hidden rounded-lg border border-slate-800/70 bg-[#020611] px-6 py-8 text-left font-sans text-white outline-none sm:px-10 sm:py-10 lg:px-[55px] lg:py-[50px]"
     >
+      {/* All slides share ONE grid cell -> height = tallest slide, no jumping */}
       <div
-        className="relative min-w-0 w-full"
+        className="grid min-w-0 w-full"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
         {SLIDES.map((slide, slideIndex) => {
           const active = slideIndex === index
-
           return (
             <div
               key={slide.id}
@@ -103,10 +91,10 @@ export default function HeroCarousel() {
               aria-roledescription="slide"
               aria-label={`${slideIndex + 1} of ${count}: ${slide.label}`}
               aria-hidden={!active}
-              className={`w-full transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+              className={`col-start-1 row-start-1 w-full transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
                 active
-                  ? 'relative z-10 opacity-100'
-                  : 'absolute inset-0 z-0 pointer-events-none opacity-0'
+                  ? 'z-10 opacity-100'
+                  : 'pointer-events-none z-0 opacity-0'
               }`}
             >
               {slide.node}
@@ -116,11 +104,7 @@ export default function HeroCarousel() {
       </div>
 
       <div className="mt-8 flex items-center justify-between gap-4">
-        <div
-          className="flex items-center gap-2"
-          role="tablist"
-          aria-label="Choose slide"
-        >
+        <div className="flex items-center gap-2" role="tablist" aria-label="Choose slide">
           {SLIDES.map((slide, slideIndex) => (
             <button
               key={slide.id}
@@ -130,9 +114,7 @@ export default function HeroCarousel() {
               aria-label={`Go to slide ${slideIndex + 1}`}
               onClick={() => go(slideIndex)}
               className={`h-1.5 rounded-full transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
-                slideIndex === index
-                  ? 'w-8 bg-sky-400'
-                  : 'w-2 bg-white/25 hover:bg-white/60'
+                slideIndex === index ? 'w-8 bg-sky-400' : 'w-2 bg-white/25 hover:bg-white/60'
               }`}
             />
           ))}
@@ -147,7 +129,6 @@ export default function HeroCarousel() {
           >
             ‹
           </button>
-
           <button
             type="button"
             aria-label="Next slide"

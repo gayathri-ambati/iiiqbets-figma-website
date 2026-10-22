@@ -33,18 +33,53 @@ const TECHS: Tech[] = [
   },
 ]
 
+/* One full set of cards. Rendered twice so the loop is seamless. */
+const Track = ({ hidden = false }: { hidden?: boolean }) => (
+  <ul
+    className="m-0 flex shrink-0 list-none items-center gap-4 p-0 pr-4"
+    aria-hidden={hidden || undefined}
+  >
+    {TECHS.map((t) => (
+      <li
+        key={t.label}
+        className="flex h-[5rem] w-[15.5rem] shrink-0 items-center justify-center gap-3 rounded-2xl border border-[#1b2d63]/70 bg-gradient-to-b from-[#0b1736]/80 to-[#060d24]/80 px-4 py-3 backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-sky-400/50"
+      >
+        <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${t.tile}`}>{t.icon}</span>
+        <span className="text-xs font-medium leading-tight text-slate-100 sm:text-[13px]">{t.name}</span>
+      </li>
+    ))}
+  </ul>
+)
+
 export default function TechLogos() {
   return (
-    <ul className="m-0 grid list-none grid-cols-2 gap-3 p-0 sm:grid-cols-3 lg:gap-4 xl:grid-cols-6">
-      {TECHS.map((t) => (
-        <li
-          key={t.label}
-          className={`flex min-h-[4.5rem] items-center justify-center gap-3 rounded-2xl px-4 py-3 transition hover:-translate-y-0.5 hover:border-sky-400/50 sm:min-h-[5rem] border border-[#1b2d63]/70 bg-gradient-to-b from-[#0b1736]/80 to-[#060d24]/80 backdrop-blur-sm`}
-        >
-          <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${t.tile}`}>{t.icon}</span>
-          <span className="text-xs font-medium leading-tight text-slate-100 sm:text-[13px]">{t.name}</span>
-        </li>
-      ))}
-    </ul>
+    <>
+      <style>{`
+        @keyframes tech-marquee {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .tech-marquee-track { animation: tech-marquee 28s linear infinite; }
+        .tech-marquee:hover .tech-marquee-track,
+        .tech-marquee:focus-within .tech-marquee-track { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) {
+          .tech-marquee-track { animation: none; }
+        }
+      `}</style>
+
+      <div
+        className="tech-marquee relative overflow-hidden py-1"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)',
+          maskImage: 'linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)',
+        }}
+      >
+        {/* width: max-content + two identical tracks => -50% shift loops perfectly */}
+        <div className="tech-marquee-track flex w-max">
+          <Track />
+          <Track hidden />
+        </div>
+      </div>
+    </>
   )
 }

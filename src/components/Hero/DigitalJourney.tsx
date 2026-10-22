@@ -17,27 +17,36 @@ const curve =
   'C 520 228, 550 224, 580 224 C 620 224, 640 218, 665 206 C 690 194, 720 190, 760 187 ' +
   'C 800 184, 815 178, 845 165 C 870 154, 900 148, 940 142 C 990 135, 1020 125, 1045 111';
 
+/* Logo badge position: floated above the curve so it never covers node text */
+const LOGO = { cx: 594, cy: 100, r: 48 };
+
+/*
+ * The viewBox is cropped tightly to the artwork (curve runs x:143 → 1045, content y:38 → 375),
+ * so the graph touches the left/right edges of the screen and has no empty space above it.
+ */
 const DigitalJourney: React.FC = () => {
   return (
-    <section className="relative w-full bg-[#030611] text-white py-12 md:py-16 font-sans overflow-hidden flex flex-col items-center justify-center">
+    <section className="relative w-full overflow-hidden bg-[#030611] p-0 font-sans text-white">
       {/* ================= DESKTOP VIEW ================= */}
-      <div className="hidden lg:block w-full max-w-[1142px] mx-auto">
-        <svg viewBox="0 0 1142 420" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+      <div className="hidden w-full lg:block">
+        <svg
+          viewBox="143 38 902 340"
+          preserveAspectRatio="xMidYMid slice"
+          className="block h-auto w-full"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <defs>
-            {/* soft dark-green card behind everything */}
-            <radialGradient id="cardGlow" cx="50%" cy="55%" r="60%">
+            <radialGradient id="cardGlow" cx="50%" cy="60%" r="65%">
               <stop offset="0%" stopColor="#031a0f" stopOpacity="0.9" />
               <stop offset="70%" stopColor="#02100a" stopOpacity="0.5" />
               <stop offset="100%" stopColor="#030611" stopOpacity="0" />
             </radialGradient>
 
-            {/* fill under the curve */}
             <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={GREEN} stopOpacity="0.14" />
               <stop offset="100%" stopColor={GREEN} stopOpacity="0" />
             </linearGradient>
 
-            {/* vertical connector lines */}
             <linearGradient id="stem" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={GREEN} stopOpacity="0" />
               <stop offset="100%" stopColor={GREEN} stopOpacity="0.9" />
@@ -50,15 +59,15 @@ const DigitalJourney: React.FC = () => {
               <feGaussianBlur stdDeviation="3" />
             </filter>
             <clipPath id="logoClip">
-              <circle cx="594" cy="150" r="54" />
+              <circle cx={LOGO.cx} cy={LOGO.cy} r={LOGO.r} />
             </clipPath>
           </defs>
 
-          {/* Card background */}
-          <rect x="97" y="45" width="953" height="330" fill="url(#cardGlow)" />
+          {/* Background glow – covers the whole viewBox */}
+          <rect x="143" y="38" width="902" height="340" fill="url(#cardGlow)" />
 
           {/* Area under the curve */}
-          <path d={`${curve} L 1045 375 L 143 375 Z`} fill="url(#areaFill)" />
+          <path d={`${curve} L 1045 378 L 143 378 Z`} fill="url(#areaFill)" />
 
           {/* Curve glow + core line */}
           <path d={curve} fill="none" stroke={GREEN} strokeWidth="6" strokeOpacity="0.45" filter="url(#blurGlow)" />
@@ -77,26 +86,24 @@ const DigitalJourney: React.FC = () => {
                 {n.desc}
               </text>
 
-              {/* vertical stem */}
               <rect x={n.x - 0.5} y={n.y + 41} width="1" height={n.dotY - n.y - 49} fill="url(#stem)" />
 
-              {/* target dot */}
               <circle cx={n.x} cy={n.dotY} r="6" fill={GREEN} opacity="0.5" filter="url(#dotGlow)" />
               <circle cx={n.x} cy={n.dotY} r="5" fill="#03140c" stroke={GREEN} strokeWidth="1.2" />
               <circle cx={n.x} cy={n.dotY} r="1.8" fill={GREEN} />
             </g>
           ))}
 
-          {/* Central logo circle (drawn last so it overlaps node 03 text) */}
-          <circle cx="594" cy="150" r="66" fill="none" stroke={GREEN} strokeOpacity="0.08" />
-          <circle cx="594" cy="150" r="60" fill="none" stroke={GREEN} strokeOpacity="0.18" strokeDasharray="2 3" />
-          <circle cx="594" cy="150" r="54" fill="#02050a" stroke={GREEN} strokeOpacity="0.35" />
+          {/* Central logo badge (sits above the curve, clear of node 03 / 04 text) */}
+          <circle cx={LOGO.cx} cy={LOGO.cy} r={LOGO.r + 10} fill="none" stroke={GREEN} strokeOpacity="0.08" />
+          <circle cx={LOGO.cx} cy={LOGO.cy} r={LOGO.r + 5} fill="none" stroke={GREEN} strokeOpacity="0.18" strokeDasharray="2 3" />
+          <circle cx={LOGO.cx} cy={LOGO.cy} r={LOGO.r} fill="#02050a" stroke={GREEN} strokeOpacity="0.35" />
           <image
             href={LogoImage}
-            x="552"
-            y="124"
-            width="84"
-            height="52"
+            x={LOGO.cx - 38}
+            y={LOGO.cy - 24}
+            width="76"
+            height="48"
             preserveAspectRatio="xMidYMid meet"
             clipPath="url(#logoClip)"
           />
@@ -104,24 +111,24 @@ const DigitalJourney: React.FC = () => {
       </div>
 
       {/* ================= MOBILE/TABLET VIEW ================= */}
-      <div className="lg:hidden w-full max-w-md mx-auto px-6 flex flex-col relative gap-8">
-        <div className="flex justify-center mb-4">
-          <div className="w-[140px] h-[140px] rounded-full bg-[#02050a] border border-[#22E08A]/30 flex items-center justify-center relative">
-            <div className="absolute inset-2 border border-dashed border-[#22E08A]/20 rounded-full" />
+      <div className="relative mx-auto flex w-full max-w-md flex-col gap-8 px-6 py-12 lg:hidden">
+        <div className="mb-4 flex justify-center">
+          <div className="relative flex h-[140px] w-[140px] items-center justify-center rounded-full border border-[#22E08A]/30 bg-[#02050a]">
+            <div className="absolute inset-2 rounded-full border border-dashed border-[#22E08A]/20" />
             <img src={LogoImage} alt="Logo" className="w-[80px] object-contain" />
           </div>
         </div>
 
-        <div className="absolute left-[39px] top-[180px] bottom-10 w-[2px] bg-[#22E08A]/20" />
+        <div className="absolute bottom-12 left-[39px] top-[228px] w-[2px] bg-[#22E08A]/20" />
 
         {nodes.map((item) => (
           <div key={item.num} className="relative pl-12">
-            <div className="absolute left-[2px] top-1 w-[18px] h-[18px] rounded-full bg-[#030611] border-2 border-[#22E08A] flex items-center justify-center z-10">
-              <div className="w-1.5 h-1.5 bg-[#22E08A] rounded-full" />
+            <div className="absolute left-[2px] top-1 z-10 flex h-[18px] w-[18px] items-center justify-center rounded-full border-2 border-[#22E08A] bg-[#030611]">
+              <div className="h-1.5 w-1.5 rounded-full bg-[#22E08A]" />
             </div>
-            <span className="text-[#22E08A] font-bold text-xs mb-1 block">{item.num}</span>
-            <h3 className="text-white font-bold text-base mb-1">{item.title}</h3>
-            <p className="text-gray-400 text-xs">{item.desc}</p>
+            <span className="mb-1 block text-xs font-bold text-[#22E08A]">{item.num}</span>
+            <h3 className="m-0 mb-1 text-left text-base font-bold text-white">{item.title}</h3>
+            <p className="m-0 text-left text-xs text-gray-400">{item.desc}</p>
           </div>
         ))}
       </div>

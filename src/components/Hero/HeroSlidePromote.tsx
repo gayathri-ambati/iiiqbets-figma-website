@@ -1,11 +1,40 @@
+import { useState } from 'react'
 import { HeroBadges, HeroEyebrow } from './HeroShared'
 import { HERO_IMAGES } from './HeroData'
+
+const PANELS = [
+  {
+    id: 'strategies',
+    image: HERO_IMAGES.dashboard,
+    alt: 'Analytics dashboards and business technology',
+    tag: '01 / STRATEGY',
+    title: '7 Digital Marketing Strategies to Grow Your Business',
+    text: 'Discover proven marketing strategies to increase brand awareness, attract potential customers, improve engagement, and grow your online presence.',
+  },
+  {
+    id: 'campaigns',
+    image: HERO_IMAGES.poster,
+    alt: 'Digital marketing campaign',
+    tag: '02 / CAMPAIGNS',
+    title: 'Social Media & Brand Campaigns',
+    text: 'Creative campaigns that tell your story, reach the right audience and turn followers into loyal customers.',
+  },
+  {
+    id: 'planner',
+    image: HERO_IMAGES.planner,
+    alt: 'Business planning and content strategy',
+    tag: '03 / CONTENT',
+    title: 'Content Planning & Strategy',
+    text: 'Plan, schedule and measure your content calendar so every post supports a clear business goal.',
+  },
+]
 
 interface Props {
   variant?: 'a' | 'b'
 }
 
 export default function HeroSlidePromote({ variant = 'a' }: Props) {
+  const [active, setActive] = useState(0)
   const compact = variant === 'b'
 
   const buttonClass =
@@ -15,7 +44,7 @@ export default function HeroSlidePromote({ variant = 'a' }: Props) {
     'flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-950/70 px-5 py-2.5 text-sm text-slate-200 transition hover:border-sky-400/60'
 
   return (
-    <div className="grid min-w-0 grid-cols-1 items-center gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
+    <div className="grid min-w-0 grid-cols-1 items-center gap-8 lg:min-h-[570px] lg:grid-cols-[0.7fr_1.3fr] lg:gap-10">
       <div className="min-w-0 text-left">
         <HeroEyebrow text="YOUR NEXT BIG IDEA STARTS HERE" dot />
 
@@ -42,7 +71,6 @@ export default function HeroSlidePromote({ variant = 'a' }: Props) {
           <button type="button" className={buttonClass}>
             Explore →
           </button>
-
           <button type="button" className={videoButtonClass}>
             <span className="flex h-7 w-7 items-center justify-center rounded-full border border-sky-400 text-[10px] text-sky-400">
               ▶
@@ -51,51 +79,65 @@ export default function HeroSlidePromote({ variant = 'a' }: Props) {
           </button>
         </div>
 
-        <div className="mt-8 hidden md:block lg:hidden">
-          <HeroBadges />
-        </div>
       </div>
 
-      {/* Images Grid */}
-      <div className="grid min-w-0 grid-cols-2 gap-4 sm:grid-cols-[2.2fr_1fr_1fr]">
-        <figure className="relative col-span-2 m-0 min-w-0 overflow-hidden rounded-xl border border-sky-400/15 sm:col-span-1">
-          <img
-            src={HERO_IMAGES.dashboard}
-            alt="Analytics dashboards and business technology"
-            // Drastically increased the minimum height of the main image
-            className="block aspect-[16/10] w-full object-cover sm:aspect-auto sm:h-full sm:min-h-[20rem] lg:min-h-[24rem]"
-          />
+      {/* Expandable panels: click (or hover / focus) one to open it big with its content */}
+      <div className="flex h-[34rem] min-w-0 flex-col gap-4 sm:h-[22rem] sm:flex-row lg:h-[473px]">
+        {PANELS.map((panel, i) => {
+          const open = i === active
+          return (
+            <button
+              key={panel.id}
+              type="button"
+              aria-pressed={open}
+              aria-label={panel.title}
+              onClick={() => setActive(i)}
+              onMouseEnter={() => setActive(i)}
+              onFocus={() => setActive(i)}
+              style={{ flexGrow: open ? 4 : 1 }}
+              className={`group relative m-0 min-h-0 min-w-0 basis-0 cursor-pointer overflow-hidden border p-0 text-left transition-[flex-grow] duration-500 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 motion-reduce:transition-none ${
+                open
+                  ? 'rounded-2xl border-sky-400/30'
+                  : 'rounded-[2rem] border-white/10'
+              }`}
+            >
+              <img
+                src={panel.image}
+                alt={panel.alt}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+              <div
+                className={`absolute inset-0 transition-opacity duration-500 ${
+                  open
+                    ? 'bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-100'
+                    : 'bg-black/30 opacity-100 group-hover:bg-black/10'
+                }`}
+              />
 
-          <figcaption className="absolute bottom-0 left-0 p-4 sm:p-6">
-            <h2 className="text-base font-bold leading-snug text-white sm:text-xl">
-              7 Digital Marketing Strategies to Grow Your Business
-            </h2>
+              {/* Content – only for the open panel */}
+              <div
+                className={`absolute bottom-0 left-0 w-full p-4 transition-all duration-500 sm:p-6 ${
+                  open
+                    ? 'translate-y-0 opacity-100 delay-150'
+                    : 'pointer-events-none translate-y-3 opacity-0'
+                }`}
+              >
+                <h2 className="text-base font-bold leading-snug text-white sm:text-xl">
+                  {panel.title}
+                </h2>
+                <p className="mt-2 max-w-[34rem] text-xs leading-snug text-slate-300">
+                  {panel.text}
+                </p>
+              </div>
+            </button>
+          )
+        })}
+      </div>
 
-            <p className="mt-2 hidden text-xs leading-snug text-slate-300 sm:block">
-              Discover proven marketing strategies to increase brand
-              awareness, attract potential customers, improve engagement,
-              and grow your online presence.
-            </p>
-          </figcaption>
-        </figure>
-
-        <figure className="m-0 min-w-0 overflow-hidden rounded-xl border border-white/10">
-          <img
-            src={HERO_IMAGES.poster}
-            alt="Digital marketing campaign"
-            className="h-full min-h-[10rem] w-full object-cover sm:min-h-[20rem] lg:min-h-[24rem]"
-          />
-        </figure>
-
-        <figure className="m-0 col-span-2 min-w-0 overflow-hidden rounded-xl border border-white/10 sm:col-span-1">
-          <img
-            src={HERO_IMAGES.planner}
-            alt="Business planning and content strategy"
-            className="h-full min-h-[10rem] w-full object-cover sm:min-h-[20rem] lg:min-h-[24rem]"
-          />
-        </figure>
+      {/* Badges: one full-width row under the content, like Figma */}
+      <div className="lg:col-span-2">
+        <HeroBadges />
       </div>
     </div>
   )

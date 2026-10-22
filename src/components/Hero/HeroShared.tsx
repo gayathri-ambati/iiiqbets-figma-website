@@ -28,9 +28,9 @@ const BADGES = [
 
 export function HeroBadges() {
   return (
-    <ul className="m-0 flex list-none flex-wrap items-center gap-x-6 gap-y-4 p-0">
+    <ul className="m-0 flex list-none flex-wrap items-center gap-x-6 gap-y-4 p-0 lg:flex-nowrap">
       {BADGES.map((b) => (
-        <li key={b.bold} className="flex items-center gap-2.5">
+        <li key={b.bold} className="flex items-center gap-2.5 whitespace-nowrap">
           <span className={`flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-base ${b.tint}`}>{b.icon}</span>
           <span className="text-xs text-slate-300 sm:text-sm">
             <strong className="font-semibold text-white">{b.bold}</strong> {b.rest}
@@ -51,26 +51,42 @@ export function HeroEyebrow({ text, dot = false }: { text: string; dot?: boolean
   )
 }
 
+function ProductCard({ p }: { p: (typeof HERO_PRODUCTS)[number] }) {
+  return (
+    <li className="flex w-[220px] shrink-0 items-center gap-3 rounded-lg border border-slate-800 bg-[#0a1122] p-3 transition hover:border-sky-400/50">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white text-[11px] font-bold text-slate-800">
+        {p.logo ? <img src={p.logo} alt="" className="h-full w-full object-contain" /> : p.initials}
+      </span>
+      <span className="min-w-0 leading-tight">
+        <span className="block text-sm font-semibold text-white">{p.label}</span>
+        <span className="mt-0.5 block text-[11px] text-slate-400">
+          {p.line1} <br />
+          {p.line2}
+        </span>
+      </span>
+    </li>
+  )
+}
+
+/** Auto-scrolling marquee, moves LEFT -> RIGHT, pauses on hover. */
 export function HeroProductStrip() {
   return (
-    <ul className="m-0 grid list-none grid-cols-2 gap-3 p-0 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-7 lg:gap-4">
-      {HERO_PRODUCTS.map((p) => (
-        <li
-          key={p.id}
-          className="flex items-center gap-3 rounded-lg border border-slate-800 bg-[#0a1122] p-3 transition hover:-translate-y-0.5 hover:border-sky-400/50"
-        >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white text-[11px] font-bold text-slate-800">
-            {p.logo ? <img src={p.logo} alt="" className="h-full w-full object-contain" /> : p.initials}
-          </span>
-          <span className="min-w-0 leading-tight">
-            <span className="block text-sm font-semibold text-white">{p.label}</span>
-            <span className="mt-0.5 block text-[10px] text-slate-400 sm:text-[11px]">
-              {p.line1} <br className="hidden xl:block" />
-              {p.line2}
-            </span>
-          </span>
-        </li>
-      ))}
-    </ul>
+    <div className="hero-marquee-wrap overflow-hidden motion-reduce:overflow-x-auto">
+      <style>{`
+        @keyframes hero-marquee { from { transform: translateX(-50%) } to { transform: translateX(0) } }
+        .hero-marquee { animation: hero-marquee 30s linear infinite; will-change: transform; }
+        .hero-marquee-wrap:hover .hero-marquee { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) { .hero-marquee { animation: none; } }
+      `}</style>
+
+      {/* list rendered twice -> seamless loop (translate by 50%) */}
+      <ul aria-label="Our products" className="hero-marquee m-0 flex w-max list-none gap-4 p-0 pb-1">
+        {[0, 1].map((copy) =>
+          HERO_PRODUCTS.map((p) => (
+            <ProductCard key={`${copy}-${p.id}`} p={p} />
+          )),
+        )}
+      </ul>
+    </div>
   )
 }

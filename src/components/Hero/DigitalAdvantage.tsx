@@ -45,31 +45,32 @@ const features = [
 
 const DigitalAdvantage: React.FC = () => {
   return (
-    <section className="relative w-full  bg-[#03050A] text-white py-16 md:py-24 px-4 md:px-8 font-sans overflow-hidden flex flex-col items-center">
+    <section className="relative w-full bg-[#03050A] text-white py-16 md:py-24 px-4 md:px-8 font-sans overflow-hidden flex flex-col items-center">
       
       {/* Background Ambient Glow */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-900/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-[1200px] flex flex-col gap-12">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col gap-12">
         
-        {/* ================= HEADER SECTION ================= */}
-        <div className="flex flex-col gap-4 max-w-3xl">
-          <div className="flex items-center gap-3">
+        {/* ================= HEADER SECTION (centered) ================= */}
+        <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-4 text-center">
+          <div className="flex items-center justify-center gap-3">
             <span className="w-8 h-[2px] bg-[#00E5FF]" />
             <span className="text-[10px] md:text-xs font-bold tracking-[0.2em] text-[#00E5FF] uppercase">
               Digital Transformation
             </span>
+            <span className="w-8 h-[2px] bg-[#00E5FF]" />
           </div>
           
-          <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.15] text-white">
+          <h1 className="m-0 w-full text-center text-3xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.15] text-white">
             From Business challenges to <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2D75] to-[#8A2BE2]">
               Digital Advantage.
             </span>
           </h1>
           
-          <p className="text-gray-400 text-xs md:text-sm leading-relaxed max-w-2xl mt-2">
+          <p className="m-0 mt-2 mx-auto w-full max-w-2xl text-center text-gray-400 text-xs md:text-sm leading-relaxed">
             We don't just build software. We understand your business, connect technology to your operations and create digital solutions designed around measurable business outcomes.
           </p>
         </div>
@@ -81,7 +82,6 @@ const DigitalAdvantage: React.FC = () => {
           <div className="lg:col-span-3 flex flex-col gap-4 md:gap-6">
             {[features[0], features[1]].map((item, idx) => (
               <div key={idx} className="flex-1 bg-[#0A0E17] border border-gray-800/80 rounded-2xl p-6 relative overflow-hidden group hover:border-gray-700 transition-colors">
-                {/* Background Number */}
                 <span className="absolute top-4 right-6 text-5xl font-black text-white/[0.03] select-none">
                   {item.id}
                 </span>
@@ -90,8 +90,8 @@ const DigitalAdvantage: React.FC = () => {
                   {item.icon}
                 </div>
                 
-                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-[11px] md:text-xs leading-relaxed">
+                <h3 className="m-0 text-left text-lg font-bold text-white mb-2">{item.title}</h3>
+                <p className="m-0 text-left text-gray-400 text-[11px] md:text-xs leading-relaxed">
                   {item.description}
                 </p>
               </div>
@@ -108,7 +108,7 @@ const DigitalAdvantage: React.FC = () => {
             {/* Ambient Center Glow */}
             <div className="absolute w-[150px] h-[150px] bg-[#FF2D75]/10 rounded-full blur-[50px]" />
 
-            {/* 2. CENTRAL LOGO GRAPHIC (Imported from Assets) */}
+            {/* Central logo */}
             <div className="relative z-10 flex items-center justify-center mb-8">
                <img 
                  src={LogoImage} 
@@ -160,7 +160,6 @@ const DigitalAdvantage: React.FC = () => {
           <div className="lg:col-span-3 flex flex-col gap-4 md:gap-6">
             {[features[2], features[3]].map((item, idx) => (
               <div key={idx} className="flex-1 bg-[#0A0E17] border border-gray-800/80 rounded-2xl p-6 relative overflow-hidden group hover:border-gray-700 transition-colors">
-                {/* Background Number */}
                 <span className="absolute top-4 right-6 text-5xl font-black text-white/[0.03] select-none">
                   {item.id}
                 </span>
@@ -169,8 +168,8 @@ const DigitalAdvantage: React.FC = () => {
                   {item.icon}
                 </div>
                 
-                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-[11px] md:text-xs leading-relaxed">
+                <h3 className="m-0 text-left text-lg font-bold text-white mb-2">{item.title}</h3>
+                <p className="m-0 text-left text-gray-400 text-[11px] md:text-xs leading-relaxed">
                   {item.description}
                 </p>
               </div>
@@ -182,14 +181,13 @@ const DigitalAdvantage: React.FC = () => {
         {/* ================= BOTTOM CTA BANNER ================= */}
         <div className="w-full bg-gradient-to-r from-[#0A0E17] via-[#111624] to-[#1A103C] border border-gray-800/80 rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
           
-          {/* Subtle glow inside banner */}
           <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-[#8A2BE2]/20 to-transparent blur-2xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col gap-2">
-            <h2 className="text-xl md:text-3xl font-bold text-white tracking-tight">
+            <h2 className="m-0 text-left text-xl md:text-3xl font-bold text-white tracking-tight">
               Ready to transform your business?
             </h2>
-            <p className="text-gray-400 text-[11px] md:text-sm">
+            <p className="m-0 text-left text-gray-400 text-[11px] md:text-sm">
               Let's turn your technology challenges into opportunities for growth.
             </p>
           </div>
