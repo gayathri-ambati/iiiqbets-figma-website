@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 
 const Ico = ({ children }: { children: ReactNode }) => (
   <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
@@ -11,19 +11,32 @@ const FEATURES = [
   { title: 'Business Growth', text: 'Technology built to scale', icon: <Ico><path d="M4 4v16h16" /><path d="m8 15 4-4 3 3 4-5" /></Ico> },
 ]
 
-// Placeholder demo video (Blender Foundation's "Big Buck Bunny"). Replace with your own ID.
-const DEFAULT_YOUTUBE_ID = 'aqz-KE-bpKQ'
+/**
+ * Same video as the "About Company" section on https://www.iiiqbets.com/
+ * TIP: for best reliability download it and host it yourself,
+ * e.g. put it in /public/videos/iiiq-service-offer.mp4 and use '/videos/iiiq-service-offer.mp4'.
+ */
+const DEFAULT_VIDEO_SRC =
+  'https://www.iiiqbets.com/wp-content/uploads/2023/12/iiiQ-General-Service-Offer-Video-Male-Voice-1.mp4'
 
 interface Props {
-  /** Direct video file (mp4/webm). Takes priority over YouTube if provided. */
+  /** Direct video file (mp4/webm). Defaults to the iiiQbets website video. */
   videoSrc?: string
-  /** YouTube video ID, e.g. "aqz-KE-bpKQ" */
+  /** Optional YouTube ID – only used if you pass it AND no videoSrc. */
   youtubeId?: string
 }
 
-export default function TechShowcase({ videoSrc, youtubeId = DEFAULT_YOUTUBE_ID }: Props) {
+export default function TechShowcase({ videoSrc, youtubeId }: Props) {
+  const src = videoSrc ?? (youtubeId ? undefined : DEFAULT_VIDEO_SRC)
   const [playing, setPlaying] = useState(false)
-  const [thumb, setThumb] = useState(`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`)
+  const [failed, setFailed] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const play = () => {
+    setPlaying(true)
+    // play() must run from the click so browsers allow audio
+    videoRef.current?.play().catch(() => setPlaying(false))
+  }
 
   return (
     <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
@@ -31,44 +44,51 @@ export default function TechShowcase({ videoSrc, youtubeId = DEFAULT_YOUTUBE_ID 
       <div className="relative">
         <div className="rounded-[1.75rem] bg-gradient-to-br from-[#1b4fa0]/70 via-[#2a1647]/70 to-[#7a1f55]/70 p-2 shadow-[0_0_60px_-10px_rgba(168,85,247,0.35)]">
           <div className="relative flex aspect-[1.6/1] items-center justify-center overflow-hidden rounded-2xl bg-[#04081a]">
-            {playing ? (
-              videoSrc ? (
-                <video src={videoSrc} className="h-full w-full object-cover" controls autoPlay />
-              ) : (
-                <iframe
-                  className="absolute inset-0 h-full w-full border-0"
-                  src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`}
-                  title="Technology showcase video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              )
-            ) : (
+            {src ? (
               <>
-                {/* Placeholder thumbnail */}
-                {!videoSrc && (
-                  <img
-                    src={thumb}
-                    alt=""
-                    loading="lazy"
-                    onError={() => setThumb(`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`)}
-                    className="absolute inset-0 h-full w-full object-cover opacity-60"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#04081a] via-[#04081a]/30 to-[#04081a]/50" />
+                {/* "#t=0.5" makes the browser show a frame as the thumbnail */}
+                <video
+                  ref={videoRef}
+                  src={`${src}#t=0.5`}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  controls={playing}
+                  playsInline
+                  preload="metadata"
+                  onEnded={() => setPlaying(false)}
+                  onError={() => setFailed(true)}
+                />
 
-                <button
-                  type="button"
-                  aria-label="Play video"
-                  onClick={() => setPlaying(true)}
-                  className="relative flex h-14 w-14 items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#ff2e7e] to-[#e11d48] p-0 text-white shadow-[0_0_40px_rgba(244,63,94,0.7)] transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-                >
-                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
-                </button>
-                <p className="m-0 absolute bottom-[10%] w-full text-center text-[8px] tracking-[0.3em] text-slate-300 sm:text-[9px]">
-                  DIGITAL TRANSFORMATION SPECIALISTS
-                </p>
+                {!playing && (
+                  <>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#04081a] via-[#04081a]/30 to-[#04081a]/50" />
+                    <button
+                      type="button"
+                      aria-label="Play video"
+                      onClick={play}
+                      className="relative flex h-14 w-14 items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#ff2e7e] to-[#e11d48] p-0 text-white shadow-[0_0_40px_rgba(244,63,94,0.7)] transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+                    </button>
+                    <p className="m-0 absolute bottom-[10%] w-full text-center text-[8px] tracking-[0.3em] text-slate-300 sm:text-[9px]">
+                      DIGITAL TRANSFORMATION SPECIALISTS
+                    </p>
+                  </>
+                )}
+
+                {failed && (
+                  <p className="m-0 absolute inset-x-0 bottom-3 text-center text-[11px] text-rose-300">
+                    Video could not be loaded – host the file on your own server.
+                  </p>
+                )}
               </>
+            ) : (
+              <iframe
+                className="absolute inset-0 h-full w-full border-0"
+                src={`https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`}
+                title="Technology showcase video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             )}
           </div>
         </div>

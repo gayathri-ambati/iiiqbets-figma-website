@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 
 
-import LogoImage from '../../assets/logo.webp';
+import LogoImage from '../../assets/iiiqbetslogo.png';
 
 
 const features = [
@@ -109,12 +109,12 @@ const DigitalAdvantage: React.FC = () => {
             <div className="absolute w-[150px] h-[150px] bg-[#FF2D75]/10 rounded-full blur-[50px]" />
 
             {/* Central logo */}
-            <div className="relative z-10 flex items-center justify-center mb-8">
-               <img 
-                 src={LogoImage} 
-                 alt="Company Logo" 
-                 className="w-[120px] md:w-[150px] h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.15)]" 
-               />
+            <div className="relative z-10 mb-8 flex items-center justify-center">
+              <img
+                src={LogoImage}
+                alt="iiQbets Logo"
+                className="h-14 w-auto object-contain drop-shadow-md md:h-20"
+              />
             </div>
 
             {/* Floating Stat Badges */}

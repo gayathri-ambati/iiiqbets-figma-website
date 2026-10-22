@@ -1,6 +1,6 @@
 import React from 'react';
 
-import LogoImage from '../../assets/logo.webp';
+import LogoImage from '../../assets/iiiqbetslogo.png';
 
 const GREEN = '#22E08A';
 
@@ -98,12 +98,12 @@ const DigitalJourney: React.FC = () => {
           <circle cx={LOGO.cx} cy={LOGO.cy} r={LOGO.r + 10} fill="none" stroke={GREEN} strokeOpacity="0.08" />
           <circle cx={LOGO.cx} cy={LOGO.cy} r={LOGO.r + 5} fill="none" stroke={GREEN} strokeOpacity="0.18" strokeDasharray="2 3" />
           <circle cx={LOGO.cx} cy={LOGO.cy} r={LOGO.r} fill="#02050a" stroke={GREEN} strokeOpacity="0.35" />
-          <image
+         <image
             href={LogoImage}
-            x={LOGO.cx - 38}
-            y={LOGO.cy - 24}
-            width="76"
-            height="48"
+            x={LOGO.cx - 40}
+            y={LOGO.cy - 20}
+            width="80"
+            height="40"
             preserveAspectRatio="xMidYMid meet"
             clipPath="url(#logoClip)"
           />
@@ -115,7 +115,7 @@ const DigitalJourney: React.FC = () => {
         <div className="mb-4 flex justify-center">
           <div className="relative flex h-[140px] w-[140px] items-center justify-center rounded-full border border-[#22E08A]/30 bg-[#02050a]">
             <div className="absolute inset-2 rounded-full border border-dashed border-[#22E08A]/20" />
-            <img src={LogoImage} alt="Logo" className="w-[80px] object-contain" />
+            <img src={LogoImage} alt="iiQbets Logo" className="h-auto w-[100px] object-contain drop-shadow-md" />
           </div>
         </div>
 
