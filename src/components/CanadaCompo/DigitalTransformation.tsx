@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 import {
   Award,
   BarChart3,
@@ -20,15 +21,79 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+/* Best option: download the image, run it through a background remover
+   (remove.bg / rembg) and use it from your own project, e.g. "/images/man.png".
+   A same-origin image also guarantees the canvas knock-out below can read pixels.
+   The remote file has a rough hair cut-out (white patches + dark blotch). */
+const HERO_IMAGE =
+  "https://sp-ao.shortpixel.ai/client/q_lossless,ret_img,w_750/https://www.iiiqbets.com/wp-content/uploads/2020/01/man1.png";
+
+/* ------------------------------------------------------------------ */
+/* HOOK: make near-white pixels transparent                            */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Turns near-white / light-grey pixels transparent so the dark hero shows
+ * through. Falls back to the original image if the canvas is blocked by CORS.
+ *
+ * threshold: lower (e.g. 210) removes more white, higher (e.g. 235) keeps
+ * more light highlights.
+ */
+function useKnockoutWhite(src: string, threshold = 225) {
+  const [out, setOut] = useState(src);
+
+  useEffect(() => {
+    let cancelled = false;
+    const img = new Image();
+    img.crossOrigin = "anonymous"; // needed to read pixels
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const ctx = c.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0);
+      try {
+        const d = ctx.getImageData(0, 0, c.width, c.height);
+        const p = d.data;
+        const feather = 25;
+        for (let i = 0; i < p.length; i += 4) {
+          const r = p[i];
+          const g = p[i + 1];
+          const b = p[i + 2];
+          const min = Math.min(r, g, b);
+          const max = Math.max(r, g, b);
+          const lowSaturation = max - min < 25;
+
+          if (lowSaturation && min > threshold) {
+            // pure white / grey fringe -> fully transparent
+            p[i + 3] = 0;
+          } else if (lowSaturation && min > threshold - feather) {
+            // soften the edge so there is no halo
+            const keep = (threshold - min) / feather; // 0..1
+            p[i + 3] = Math.round(p[i + 3] * keep);
+          }
+        }
+        ctx.putImageData(d, 0, 0);
+        if (!cancelled) setOut(c.toDataURL("image/png"));
+      } catch {
+        /* CORS blocked: keep original image */
+      }
+    };
+    img.src = src;
+    return () => {
+      cancelled = true;
+    };
+  }, [src, threshold]);
+
+  return out;
+}
+
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
 /* ------------------------------------------------------------------ */
 
-type Service = {
-  title: string;
-  description: string;
-  icon: LucideIcon;
-};
+type Service = { title: string; description: string; icon: LucideIcon };
 
 const leftServices: Service[] = [
   {
@@ -88,7 +153,7 @@ const stats: { value: string; label: string; icon: LucideIcon }[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* DECORATIVE BACKGROUND (dotted wave lines)                           */
+/* DECORATIVE BACKGROUND                                               */
 /* ------------------------------------------------------------------ */
 
 function Waves({ className = "" }: { className?: string }) {
@@ -124,22 +189,31 @@ function Waves({ className = "" }: { className?: string }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* SERVICE CARD                                                        */
+/* SERVICE CARD (text is explicitly LEFT aligned)                      */
 /* ------------------------------------------------------------------ */
 
 function ServiceCard({ service }: { service: Service }) {
   const Icon = service.icon;
   return (
-    <article className="group flex min-h-[92px] items-center gap-4 rounded-xl border border-white/10 bg-gradient-to-r from-[#14162f]/90 to-[#0d1024]/90 px-4 py-3.5 backdrop-blur transition-all duration-300 hover:border-purple-400/50 hover:shadow-[0_8px_30px_rgba(139,92,246,0.22)]">
+    <article
+      style={{ textAlign: "left" }}
+      className="group flex min-h-[92px] items-center gap-4 rounded-xl border border-white/10 bg-gradient-to-r from-[#14162f]/90 to-[#0d1024]/90 px-4 py-3.5 text-left backdrop-blur transition-all duration-300 hover:border-purple-400/50 hover:shadow-[0_8px_30px_rgba(139,92,246,0.22)]"
+    >
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-purple-400/30 bg-gradient-to-br from-[#3b2a7a] to-[#1a1442] shadow-[0_0_16px_rgba(168,85,247,0.35)]">
         <Icon className="h-5 w-5 text-purple-200" strokeWidth={1.8} />
       </div>
 
-      <div className="min-w-0 flex-1">
-        <h3 className="text-[13px] font-semibold leading-snug text-white">
+      <div style={{ textAlign: "left" }} className="min-w-0 flex-1 !text-left">
+        <h3
+          style={{ textAlign: "left" }}
+          className="m-0 !text-left text-[13px] font-semibold leading-snug text-white"
+        >
           {service.title}
         </h3>
-        <p className="mt-1 text-[10.5px] leading-snug text-slate-400">
+        <p
+          style={{ textAlign: "left" }}
+          className="m-0 mt-1 !text-left text-[10.5px] leading-snug text-slate-400"
+        >
           {service.description}
         </p>
       </div>
@@ -159,7 +233,6 @@ function ServiceCard({ service }: { service: Service }) {
 function CoreValuesBulb() {
   return (
     <div className="relative mx-auto h-[340px] w-[260px]">
-      {/* soft glow behind the bulb */}
       <div className="absolute left-1/2 top-20 h-48 w-48 -translate-x-1/2 rounded-full bg-purple-600/30 blur-3xl" />
 
       <svg
@@ -193,7 +266,6 @@ function CoreValuesBulb() {
           </filter>
         </defs>
 
-        {/* classic bulb: round top, curved taper, narrow neck */}
         <path
           d="M95 262
              C 95 240, 82 224, 62 202
@@ -208,32 +280,32 @@ function CoreValuesBulb() {
           strokeLinejoin="round"
           filter="url(#neon)"
         />
-
-        {/* neck rim */}
         <line
-          x1="95" y1="262" x2="165" y2="262"
-          stroke="url(#bulbStroke)" strokeWidth="2"
+          x1="95"
+          y1="262"
+          x2="165"
+          y2="262"
+          stroke="url(#bulbStroke)"
+          strokeWidth="2"
         />
 
-        {/* screw base: three glowing rings */}
         <g filter="url(#neon)">
-          <rect x="88"  y="270" width="84" height="10" rx="5" fill="url(#baseGrad)" />
-          <rect x="97"  y="286" width="66" height="10" rx="5" fill="url(#baseGrad)" />
+          <rect x="88" y="270" width="84" height="10" rx="5" fill="url(#baseGrad)" />
+          <rect x="97" y="286" width="66" height="10" rx="5" fill="url(#baseGrad)" />
           <rect x="108" y="302" width="44" height="10" rx="5" fill="url(#baseGrad)" />
         </g>
       </svg>
 
-      {/* content sits inside the bulb: centered rows follow the taper */}
       <div className="absolute inset-x-0 top-[46px] flex flex-col items-center">
-        <h3 className="mb-4 text-[15px] font-bold text-white">
+        <h3 className="m-0 mb-4 text-center text-[15px] font-bold text-white">
           Our Core <span className="text-purple-300">Values</span>
         </h3>
 
-        <ul className="flex flex-col items-center gap-[10px]">
+        <ul className="m-0 flex list-none flex-col items-center gap-[10px] p-0">
           {values.map(({ icon: Icon, text }) => (
             <li
               key={text}
-              className="flex items-center justify-center gap-2 whitespace-nowrap text-[10.5px] leading-none text-slate-200"
+              className="m-0 flex items-center justify-center gap-2 whitespace-nowrap p-0 text-[10.5px] leading-none text-slate-200"
             >
               <Icon className="h-3.5 w-3.5 shrink-0 text-purple-400" strokeWidth={2} />
               {text}
@@ -250,8 +322,11 @@ function CoreValuesBulb() {
 /* ------------------------------------------------------------------ */
 
 export default function DigitalTransformation() {
+  // white patches around the hair / shirt are removed here
+  const heroSrc = useKnockoutWhite(HERO_IMAGE);
+
   return (
-    <section className="relative overflow-hidden bg-[#070a1a] font-['Poppins',sans-serif] text-white">
+    <section className="relative overflow-hidden bg-[#070a1a] font-['Poppins',sans-serif] text-left text-white">
       {/* ============================ HERO ============================ */}
       <div className="relative isolate overflow-hidden border-b border-white/10 bg-gradient-to-br from-[#080b1c] via-[#0a0c20] to-[#150f33]">
         <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-purple-700/10 blur-3xl" />
@@ -259,21 +334,21 @@ export default function DigitalTransformation() {
         <Waves className="right-0 top-0 h-full w-[55%] opacity-70" />
         <Waves className="bottom-0 left-0 hidden h-1/2 w-[30%] -scale-x-100 opacity-40 md:block" />
 
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-6 px-5 pt-14 sm:px-8 md:grid-cols-2 lg:px-16">
+        {/* items-end => the man's image sits on the hero's bottom edge */}
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-end gap-4 px-5 pt-12 sm:px-8 md:grid-cols-[1.15fr_0.85fr] lg:px-16">
           {/* ---- Left content ---- */}
-          <div className="relative z-10 pb-10 text-center md:pb-14 md:text-left">
+          <div className="relative z-10 self-center pb-10 text-center md:pb-12 md:text-left">
             <span className="mb-3 inline-block text-[13px] font-bold tracking-[2px] text-purple-400">
               YOUR PARTNER FOR
             </span>
 
-            <h1 className="text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
+            <h1 className="m-0 text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
               Digital
-              <span className="relative block w-fit bg-gradient-to-r from-indigo-200 via-purple-300 to-purple-500 bg-clip-text text-transparent max-md:mx-auto">
+              <span className="relative block w-fit bg-gradient-to-r from-indigo-200 via-purple-300 to-purple-500 bg-clip-text pb-2 text-transparent max-md:mx-auto">
                 Transformation
-                {/* swoosh underline */}
                 <svg
                   viewBox="0 0 400 14"
-                  className="absolute -bottom-1 left-0 h-3 w-full"
+                  className="absolute -bottom-0 left-0 h-3 w-full"
                   fill="none"
                   aria-hidden="true"
                 >
@@ -294,17 +369,16 @@ export default function DigitalTransformation() {
               </span>
             </h1>
 
-            <p className="mx-auto mt-6 max-w-md text-[13px] leading-6 text-slate-300 md:mx-0">
-              iiiQ can be your partner of choice in your digital
-              transformation journey. We help businesses elevate their value
-              through technology, data and innovation.
+            <p className="mx-auto mb-0 mt-6 max-w-md text-[13px] leading-6 text-slate-300 md:mx-0">
+              iiiQ can be your partner of choice in your digital transformation
+              journey. We help businesses elevate their value through
+              technology, data and innovation.
             </p>
 
-            {/* CTA buttons */}
             <div className="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
               <a
                 href="#core-services"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 px-5 py-2.5 text-[11px] font-semibold text-white shadow-[0_0_20px_rgba(139,92,246,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(139,92,246,0.7)]"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 px-5 py-2.5 text-[11px] font-semibold text-white no-underline shadow-[0_0_20px_rgba(139,92,246,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(139,92,246,0.7)]"
               >
                 Explore Our Services
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -312,7 +386,7 @@ export default function DigitalTransformation() {
 
               <a
                 href="#overview"
-                className="inline-flex items-center gap-2 rounded-full border border-purple-400/50 bg-white/[0.03] px-5 py-2.5 text-[11px] font-semibold text-white transition-all duration-300 hover:bg-purple-500/20"
+                className="inline-flex items-center gap-2 rounded-full border border-purple-400/50 bg-white/[0.03] px-5 py-2.5 text-[11px] font-semibold text-white no-underline transition-all duration-300 hover:bg-purple-500/20"
               >
                 <span className="flex h-4 w-4 items-center justify-center rounded-full bg-purple-500/80">
                   <Play className="h-2 w-2 fill-white text-white" />
@@ -321,21 +395,24 @@ export default function DigitalTransformation() {
               </a>
             </div>
 
-            {/* Stats */}
-            <div className="mx-auto mt-8 grid max-w-md grid-cols-3 md:mx-0">
+            {/* Stats: labels never wrap, so every item stays on one line */}
+            <div className="mx-auto mt-8 flex max-w-lg flex-wrap items-center justify-center gap-y-4 md:mx-0 md:flex-nowrap md:justify-start">
               {stats.map(({ icon: Icon, value, label }, i) => (
                 <div
                   key={label}
-                  className={`flex items-center gap-2.5 ${
-                    i > 0 ? "border-l border-white/15 pl-3 md:pl-4" : ""
-                  } ${i < stats.length - 1 ? "pr-2" : ""}`}
+                  className={`flex items-center gap-2.5 px-4 ${
+                    i === 0 ? "md:pl-0" : "border-l border-white/15"
+                  }`}
                 >
                   <Icon className="h-5 w-5 shrink-0 text-purple-400" strokeWidth={1.8} />
                   <div className="text-left">
                     <strong className="block text-base font-bold leading-none text-white">
                       {value}
                     </strong>
-                    <span className="mt-1 block text-[8.5px] leading-tight text-slate-400">
+                    <span
+                      style={{ whiteSpace: "nowrap" }}
+                      className="mt-1 block !whitespace-nowrap text-[8.5px] leading-tight text-slate-400"
+                    >
                       {label}
                     </span>
                   </div>
@@ -344,16 +421,16 @@ export default function DigitalTransformation() {
             </div>
           </div>
 
-          {/* ---- Hero image ---- */}
-          <div className="relative mx-auto flex h-[300px] w-full max-w-md items-end justify-center md:h-[400px] md:max-w-none lg:h-[430px]">
-            {/* outer glowing ring */}
-            <div className="absolute bottom-[-60px] left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full border-2 border-purple-400/70 shadow-[0_0_25px_rgba(168,85,247,0.6),inset_0_0_40px_rgba(168,85,247,0.15)] md:h-[380px] md:w-[380px]" />
+          {/* ---- Hero image: anchored to the bottom, ring clipped by hero edge ---- */}
+          <div className="relative mx-auto h-[340px] w-full max-w-md md:h-[440px] md:max-w-none lg:h-[480px]">
+            {/* glowing ring (bottom part is cut by the hero edge, like the design) */}
+            <div className="absolute -bottom-8 left-1/2 h-[280px] w-[280px] -translate-x-1/2 rounded-full border-2 border-purple-400/70 shadow-[0_0_25px_rgba(168,85,247,0.6),inset_0_0_40px_rgba(168,85,247,0.15)] md:-bottom-10 md:h-[360px] md:w-[360px] lg:-bottom-[50px] lg:h-[400px] lg:w-[400px]" />
             <div className="absolute bottom-0 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-purple-600/30 blur-[80px]" />
 
             <img
-              src=""
+              src={heroSrc}
               alt="Digital transformation professional"
-              className="relative z-10 h-full w-auto max-w-full object-contain object-bottom drop-shadow-[0_0_25px_rgba(139,92,246,0.25)]"
+              className="absolute bottom-0 left-1/2 z-10 h-full w-auto max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-[0_0_25px_rgba(139,92,246,0.25)]"
             />
           </div>
         </div>
@@ -368,9 +445,16 @@ export default function DigitalTransformation() {
         <Waves className="bottom-0 left-0 h-48 w-1/3 opacity-30" />
         <Waves className="bottom-0 right-0 h-48 w-1/3 opacity-40" />
 
-        <h2 className="relative z-10 mb-6 text-xl font-bold text-white">
-          Our Core Services
-        </h2>
+        {/* left-aligned heading with small accent underline */}
+        <div style={{ textAlign: "left" }} className="relative z-10 mb-6 !text-left">
+          <h2
+            style={{ textAlign: "left" }}
+            className="m-0 !text-left text-xl font-bold text-white"
+          >
+            Our Core Services
+          </h2>
+          <span className="mt-2 block h-[2px] w-10 rounded-full bg-gradient-to-r from-purple-500 to-transparent" />
+        </div>
 
         <div className="relative z-10 grid grid-cols-1 items-center gap-5 lg:grid-cols-[1fr_260px_1fr] lg:gap-6">
           <div className="flex flex-col gap-3.5">
