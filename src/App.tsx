@@ -65,6 +65,9 @@ import AdminContacts from './pages/admin/AdminContact'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
 import { useScrollToTop } from './hooks/useScrollToTop' // adjust path
 import './App.css'
+import CanadaPage from './pages/Canada'
+import USAPage from './pages/USA'
+import CareersPage from './pages/Careers'
 
 function App() {
   useScrollToTop() // 👈 call the hook here
@@ -80,6 +83,9 @@ function App() {
           <Route path="/service" element={<Service />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/canada" element={<CanadaPage />} />
+          <Route path="/usa" element={<USAPage />} />
+          <Route path="/career" element={<CareersPage />} />
 
           {/* Admin routes */}
           <Route path="/admin" element={<AdminLogin />} />
@@ -92,9 +98,9 @@ function App() {
             }
           />
 
-          <Route path="/career" element={<div>Career Page Coming Soon</div>} />
+          {/* <Route path="/career" element={<div>Career Page Coming Soon</div>} />
           <Route path="/canada" element={<div>iiQbets Canada Coming Soon</div>} />
-          <Route path="/usa" element={<div>iiQbets USA Coming Soon</div>} />
+          <Route path="/usa" element={<div>iiQbets USA Coming Soon</div>} /> */}
         </Routes>
       </main>
       <Footer />
